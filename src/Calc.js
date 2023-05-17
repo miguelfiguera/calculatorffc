@@ -48,21 +48,76 @@ export default function Calc() {
     { name: "add", value: "+" },
     { name: "subtract", value: "-" },
     { name: "multiply", value: "*" },
-    { name: "divide", value: "/" },
+    { name: "divide", value: "\/" },
   ];
   const [output, setOutput] = useState(0);
-  const [input, setInput] = useState([]);
+  const [input, setInput] = useState("");
   const [operator, setOperator] = useState(false);
   const [decimal, setDecimal] = useState(false);
-  const [result, setResult] = useState();
 
   const handleClear = () => {
     setOutput(0);
-    setInput(0);
+    setInput("");
     setOperator(false);
-    setResult(0);
     setDecimal(false);
   };
+
+  const handleOperators = (e) => {
+    const arr=['+','/','*','-']
+
+    if (
+      (input[input.length - 1] === "+" ||
+        input[input.length - 1] === "*" ||
+        input[input.length - 1] === "/") &&
+      e.target.value === "-"
+    ) {
+      setInput(input + e.target.value);
+    } else if (operator === false) {
+      setInput(input + e.target.value);
+      setOperator(true);
+      setDecimal(false);
+    } else if ( arr.indexOf(input[input.length-2])>= 0 && arr.indexOf(input[input.length-1])>= 0 && arr.indexOf(e.target.value) >= 0){
+      setInput(input.slice(0,input.length-2) + e.target.value)   
+      console.log(input)
+    } else if (input==='' && output.toString().length!==0){
+      const lol=output.toString() + e.target.value
+      setInput(lol)
+    }
+    
+    else {
+    }
+  };
+
+  const handleDecimal = (e) => {
+    if (decimal === false) {
+      setDecimal(true);
+      setInput(input + e.target.value);
+    }
+  };
+
+  const handleEqual = () => {
+    setOutput(
+ String(eval(input))
+    );
+    setInput("");
+    setOperator(false);
+    setDecimal(false);
+  };
+
+  const handleInput = (e) => {
+    if((e.target.value===0 || e.target.value==='0') && (input[input.length-1]===0 ||input[input.length-1]==='0')){
+      setInput(input)
+      return;
+    }
+    else if (input === "" && output !== "") {
+      setInput(input + output);
+    }
+    setInput(input + e.target.value);
+    if (operator === true) {
+      setOperator(false);
+    }
+  };
+
 
   return (
     <div
@@ -71,20 +126,12 @@ export default function Calc() {
       style={{ height: "400px", width: "325px", backgroundColor: "black" }}
     >
       {" "}
-      <h1>{input.typeOf}</h1>
       <div id="screen" className="my-3 border border-secondary text-light">
         <div
           id="display"
           style={{ height: "50px", backgroundColor: "#ea580c" }}
         >
-          {result !== 0 ? result : output}
-        </div>
-        <div
-          id="input"
-          className="border-top border-bottom border-secondary overflow-auto"
-          style={{ height: "50px", backgroundColor: "#a16207" }}
-        >
-          {input}
+          {input === "" ? output : input}
         </div>
       </div>
       <div id="operators">
@@ -93,13 +140,7 @@ export default function Calc() {
             <button
               value={e.value}
               onClick={(e) => {
-                if (operator === false) {
-                  setInput(input + e.target.value);
-                  setOperator(true);
-                  setDecimal(false)
-                } else {
-                  //this is the place to insert equalto...
-                }
+                handleOperators(e);
               }}
               id={e.name}
               className="btn btn-dark mx-2 my-2 px-4"
@@ -115,7 +156,7 @@ export default function Calc() {
             <button
               className="btn btn-primary mx-2 my-2 py-3 px-3"
               onClick={(e) => {
-                setInput(input + e.target.value);
+                handleInput(e);
               }}
               value={e.num}
               id={e.name}
@@ -129,10 +170,7 @@ export default function Calc() {
           value="."
           className="btn btn-dark px-3 ms-2"
           onClick={(e) => {
-            if (decimal === false) {
-              setDecimal(true);
-              setInput(input + e.target.value);
-            }
+            handleDecimal(e);
           }}
         >
           .
@@ -144,7 +182,11 @@ export default function Calc() {
         >
           C
         </button>
-        <button id="equals" className="btn btn-success px-5">
+        <button
+          id="equals"
+          className="btn btn-success px-5"
+          onClick={handleEqual}
+        >
           =
         </button>
       </div>

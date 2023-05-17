@@ -1,23 +1,9 @@
-import logo from './logo.svg';
-import './App.css';
-
+import Calc from './Calc';
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App container-fluid" style={{background: 'rgb(254,63,146)',
+      background: 'radial-gradient(circle, rgba(254,63,146,1) 0%, rgba(29,99,182,1) 100%)',width:'100%',height:'100vh'}}>
+      <Calc/>
     </div>
   );
 }

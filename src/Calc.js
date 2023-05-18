@@ -48,7 +48,7 @@ export default function Calc() {
     { name: "add", value: "+" },
     { name: "subtract", value: "-" },
     { name: "multiply", value: "*" },
-    { name: "divide", value: "\/" },
+    { name: "divide", value: "/" },
   ];
   const [output, setOutput] = useState(0);
   const [input, setInput] = useState("");
@@ -63,7 +63,7 @@ export default function Calc() {
   };
 
   const handleOperators = (e) => {
-    const arr=['+','/','*','-']
+    const arr = ["+", "/", "*", "-"];
 
     if (
       (input[input.length - 1] === "+" ||
@@ -76,15 +76,13 @@ export default function Calc() {
       setInput(input + e.target.value);
       setOperator(true);
       setDecimal(false);
-    } else if ( arr.indexOf(input[input.length-2])>= 0 && arr.indexOf(input[input.length-1])>= 0 && arr.indexOf(e.target.value) >= 0){
-      setInput(input.slice(0,input.length-2) + e.target.value)   
-      console.log(input)
-    } else if (input==='' && output.toString().length!==0){
-      const lol=output.toString() + e.target.value
-      setInput(lol)
-    }
-    
-    else {
+    } else if (
+      arr.indexOf(input[input.length - 2]) >= 0 &&
+      arr.indexOf(input[input.length - 1]) >= 0 &&
+      arr.indexOf(e.target.value) >= 0
+    ) {
+      setInput(input.slice(0, input.length - 2) + e.target.value);
+      console.log(input);
     }
   };
 
@@ -96,21 +94,18 @@ export default function Calc() {
   };
 
   const handleEqual = () => {
-    setOutput(
- String(eval(input))
-    );
-    setInput("");
-    setOperator(false);
-    setDecimal(false);
+
+   setOutput(String(eval(input)));
+   setInput('')
   };
 
   const handleInput = (e) => {
-    if((e.target.value===0 || e.target.value==='0') && (input[input.length-1]===0 ||input[input.length-1]==='0')){
-      setInput(input)
+    if (
+      (e.target.value === 0 || e.target.value === "0") &&
+      (input[input.length - 1] === 0 || input[input.length - 1] === "0")
+    ) {
+      setInput(input);
       return;
-    }
-    else if (input === "" && output !== "") {
-      setInput(input + output);
     }
     setInput(input + e.target.value);
     if (operator === true) {
@@ -118,6 +113,31 @@ export default function Calc() {
     }
   };
 
+  useEffect(()=>{
+    function resetThis(){
+      setOperator(false);
+      setDecimal(false);
+      
+      console.log(input,decimal,operator)
+    }
+
+    resetThis()
+
+  },[output])
+
+  useEffect(()=>{
+
+    function theInput(){
+      if(input.length===1){
+        const state=input.slice(0,1)
+        const theOther=String(eval(output))
+        setInput(theOther+state)
+      }
+    }
+
+theInput()
+
+  },[operator])
 
   return (
     <div
@@ -139,6 +159,7 @@ export default function Calc() {
           return (
             <button
               value={e.value}
+              key={e.name}
               onClick={(e) => {
                 handleOperators(e);
               }}
